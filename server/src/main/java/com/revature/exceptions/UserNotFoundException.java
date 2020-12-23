@@ -1,6 +1,6 @@
 package com.revature.exceptions;
 
-public class UserNotFoundException extends RuntimeException {
+public class UserNotFoundException extends AbstractHttpException {
 
 	/**
 	 * 
@@ -8,7 +8,7 @@ public class UserNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	public UserNotFoundException() {
-		super("User not found.");
+		super("User not found.", 404);
 	}
 
 }

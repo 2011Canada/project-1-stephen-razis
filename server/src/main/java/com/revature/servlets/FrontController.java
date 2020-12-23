@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class FrontController extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 13455643L;
 
     protected void directControl(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
     	//be our front controller
@@ -25,7 +25,7 @@ public class FrontController extends HttpServlet {
     			break;
     		case "POST":
     			res.setStatus(400);
-    			writer.write("Method not supported.");
+    			writer.write("You hit what you were supposed to.");
     			break;
     		case "PUT":
     			res.setStatus(400);
