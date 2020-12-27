@@ -12,29 +12,56 @@ public class Reimbursement {
     private int statusId;   //may want to make this an enum
     private int typeId;     //may want to make this an enum
 
-    public Reimbursement(int id, int amount, String submitted, String description, int authorId, int typeId) {
+    //default, not resolved and no description
+    //if new reimbursement, set the id to 0
+    public Reimbursement(int id, int amount, String submitted, int authorId, int typeId) {
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
         this.resolved = "";
-        this.description = description;
+        this.description = "";
         this.authorId = authorId;
         this.resolverId = 0;
-        this.statusId = "pending";
+        this.statusId = 2;
         this.typeId = typeId;
     }
 
-    public Reimbursement(int id, int amount, String submitted, String description, int authorId, int typeId, Byte[] receipt) {
+    //description   
+    public Reimbursement(int id, int amount, String submitted, String resolved, String description, int authorId, int typeId, int resolverId, int statusId) {
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
-        this.resolved = "";
+        this.resolved = resolved;
         this.description = description;
         this.authorId = authorId;
-        this.resolverId = 0;
-        this.statusId = "pending";
+        this.resolverId = resolverId;
+        this.statusId = statusId;
         this.typeId = typeId;
-        this.receipt = receipt;
+    }
+
+    //resolved   
+    public Reimbursement(int id, int amount, String submitted, String resolved, int authorId, int typeId, int resolverId, int statusId) {
+        this.id = id;
+        this.amount = amount;
+        this.submitted = submitted;
+        this.resolved = resolved;
+        this.authorId = authorId;
+        this.resolverId = resolverId;
+        this.statusId = statusId;
+        this.typeId = typeId;
+    }
+
+    //resolved with description
+    public Reimbursement(int id, int amount, String submitted, String resolved, String description, int authorId, int typeId, int resolverId, int statusId) {
+        this.id = id;
+        this.amount = amount;
+        this.submitted = submitted;
+        this.resolved = resolved;
+        this.description = description;
+        this.authorId = authorId;
+        this.resolverId = resolverId;
+        this.statusId = statusId;
+        this.typeId = typeId;
     }
 
     public int getId() {
