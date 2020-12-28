@@ -12,48 +12,79 @@ public class ReimbursementServices {
         this.activeUser = activeUser;
     }
 
-    //TODO
     public List<Reimbursement> GetAllReimbursements() {
-
+        int permissionLevel = 2;
+        if (activeUser.getRoleId <= permissionLevel && activeUser.getRoleId > 0) {
+            return rd.GetAllReimbursements();
+        }
+        else {
+            return null;
+        }
     }
 
-    //TODO
     public List<Reimbursement> GetReimbursementsByAuthor(int authorId) {
+        int permissionLevel = 2;
 
+        if (activeUser.getId() == authorId || (activeUser.getRoleId() > 0 && activeUser.getRoleId() <= permissionLevel)) {
+            return rd.GetAllReimbursementsByAuthor(authorId);
+        }
+        else {
+            return null;
+        }
     }
 
-    //TODO
     public Reimbursement GetReimbursementById(int reimbursementId) {
+        int permissionLevel = 2;
 
+        if (activeUser.getRoleId() > 0 && activeUser.getRoleId() <= permissionLevel) {
+            rd.GetReimbursementById(reimbursementId);
+        }
+        else {
+            return null;
+        }
     }
 
-    //TODO
     public List<Reimbursement> GetReimbursementsByStatus(int statusId) {
-
+        int permissionLevel = 2;
+        if (activeUser.getRoleId <= permissionLevel && activeUser.getRoleId > 0) {
+            return rd.GetReimbursementsByStatus(statusId);
+        }
+        else {
+            return null;
+        }
     }
 
-    //TODO
     public List<Reimbursement> GetReimbursementsByType(int typeId) {
-
+        int permissionLevel = 2;
+        if (activeUser.getRoleId <= permissionLevel && activeUser.getRoleId > 0) {
+            return rd.GetReimbursementsByType(typeId);
+        }
+        else {
+            return null;
+        }
     }
 
-    //TODO
     public void AcceptReimbursementRequest(Reimbursement r) {
-
+        int permissionLevel = 2;
+        if (activeUser.getRoleId <= permissionLevel && activeUser.getRoleId > 0) {
+            r.statusId = 3;
+            rd.UpdateReimbursement(r);
+        }
     }
 
-    //TODO
     public void RejectReimbursementRequest(Reimbursement r) {
-
+        int permissionLevel = 2;
+        if (activeUser.getRoleId <= permissionLevel && activeUser.getRoleId > 0) {
+            r.statusId = 1;
+            rd.UpdateReimbursement(r);
+        }
     }
 
-    //TODO
     public void CreateReimbursementRequest(Reimbursement r) {
-
+        rd.CreateReimbursement(r);
     }
 
-    //TODO 
     public void UpdateReimbursementRequest(Reimbursement r) {
-        
+        rd.UpdateReimbursement(r);
     }
 }
