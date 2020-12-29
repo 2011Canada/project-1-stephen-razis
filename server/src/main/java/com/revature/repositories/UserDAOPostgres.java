@@ -1,7 +1,18 @@
 package com.revature.repositories;
 
-public class UserDAOPostgres implements IUserDAO {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.revature.models.User;
+import com.revature.utils.ConnectionFactory;
+
+public class UserDAOPostgres implements IUserDAO {
+	ConnectionFactory cf = ConnectionFactory.getConnectionFactory();
+	
     public User GetUserById(int id) {
         Connection conn = cf.getConnection();
 		
@@ -54,6 +65,7 @@ public class UserDAOPostgres implements IUserDAO {
 			ResultSet rs = ps.executeQuery();
 			
 			while (rs.next()) {
+				int id = rs.getInt("users_id");
                 int roleId = rs.getInt("role_id");
 				String username = rs.getString("username");
                 String firstName = rs.getString("first_name");

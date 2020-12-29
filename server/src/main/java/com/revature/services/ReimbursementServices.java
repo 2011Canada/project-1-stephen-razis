@@ -1,5 +1,14 @@
 package com.revature.services;
 
+import java.util.List;
+
+import com.revature.models.Reimbursement;
+import com.revature.models.User;
+import com.revature.repositories.IReimbursementDAO;
+import com.revature.repositories.IUserDAO;
+import com.revature.repositories.ReimbursementDAOPostgres;
+import com.revature.repositories.UserDAOPostgres;
+
 public class ReimbursementServices {
     IReimbursementDAO rd;
     IUserDAO ud;
@@ -14,7 +23,7 @@ public class ReimbursementServices {
 
     public List<Reimbursement> GetAllReimbursements() {
         int permissionLevel = 2;
-        if (activeUser.getRoleId <= permissionLevel && activeUser.getRoleId > 0) {
+        if (activeUser.getRoleId() <= permissionLevel && activeUser.getRoleId() > 0) {
             return rd.GetAllReimbursements();
         }
         else {
@@ -37,7 +46,7 @@ public class ReimbursementServices {
         int permissionLevel = 2;
 
         if (activeUser.getRoleId() > 0 && activeUser.getRoleId() <= permissionLevel) {
-            rd.GetReimbursementById(reimbursementId);
+           return rd.GetReimbursementById(reimbursementId);
         }
         else {
             return null;
@@ -46,8 +55,8 @@ public class ReimbursementServices {
 
     public List<Reimbursement> GetReimbursementsByStatus(int statusId) {
         int permissionLevel = 2;
-        if (activeUser.getRoleId <= permissionLevel && activeUser.getRoleId > 0) {
-            return rd.GetReimbursementsByStatus(statusId);
+        if (activeUser.getRoleId() <= permissionLevel && activeUser.getRoleId() > 0) {
+            return rd.GetAllReimbursementsByType(statusId);
         }
         else {
             return null;
@@ -56,8 +65,8 @@ public class ReimbursementServices {
 
     public List<Reimbursement> GetReimbursementsByType(int typeId) {
         int permissionLevel = 2;
-        if (activeUser.getRoleId <= permissionLevel && activeUser.getRoleId > 0) {
-            return rd.GetReimbursementsByType(typeId);
+        if (activeUser.getRoleId() <= permissionLevel && activeUser.getRoleId() > 0) {
+            return rd.GetAllReimbursementsByType(typeId);
         }
         else {
             return null;
@@ -66,16 +75,16 @@ public class ReimbursementServices {
 
     public void AcceptReimbursementRequest(Reimbursement r) {
         int permissionLevel = 2;
-        if (activeUser.getRoleId <= permissionLevel && activeUser.getRoleId > 0) {
-            r.statusId = 3;
+        if (activeUser.getRoleId() <= permissionLevel && activeUser.getRoleId() > 0) {
+            r.setStatusId(3);
             rd.UpdateReimbursement(r);
         }
     }
 
     public void RejectReimbursementRequest(Reimbursement r) {
         int permissionLevel = 2;
-        if (activeUser.getRoleId <= permissionLevel && activeUser.getRoleId > 0) {
-            r.statusId = 1;
+        if (activeUser.getRoleId() <= permissionLevel && activeUser.getRoleId() > 0) {
+            r.setStatusId(1);
             rd.UpdateReimbursement(r);
         }
     }

@@ -14,7 +14,7 @@ public class Reimbursement {
 
     //default, not resolved and no description
     //if new reimbursement, set the id to 0
-    public Reimbursement(int id, int amount, String submitted, int authorId, int typeId) {
+    public Reimbursement(int id, double amount, String submitted, int authorId, int typeId) {
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
@@ -27,7 +27,7 @@ public class Reimbursement {
     }
 
     //description   
-    public Reimbursement(int id, int amount, String submitted, String resolved, String description, int authorId, int typeId, int resolverId, int statusId) {
+    public Reimbursement(int id, double amount, String submitted, String resolved, String description, int authorId, int typeId, int resolverId, int statusId) {
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
@@ -39,8 +39,8 @@ public class Reimbursement {
         this.typeId = typeId;
     }
 
-    //resolved   
-    public Reimbursement(int id, int amount, String submitted, String resolved, int authorId, int typeId, int resolverId, int statusId) {
+    //resolved no description
+    public Reimbursement(int id, double amount, String submitted, String resolved, int authorId, int typeId, int resolverId, int statusId) {
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
@@ -52,17 +52,17 @@ public class Reimbursement {
     }
 
     //resolved with description
-    public Reimbursement(int id, int amount, String submitted, String resolved, String description, int authorId, int typeId, int resolverId, int statusId) {
-        this.id = id;
-        this.amount = amount;
-        this.submitted = submitted;
-        this.resolved = resolved;
-        this.description = description;
-        this.authorId = authorId;
-        this.resolverId = resolverId;
-        this.statusId = statusId;
-        this.typeId = typeId;
-    }
+//    public Reimbursement(int id, double amount, int statusId, String submitted, String resolved, String description, int authorId, int typeId, int resolverId) {
+//        this.id = id;
+//        this.amount = amount;
+//        this.submitted = submitted;
+//        this.resolved = resolved;
+//        this.description = description;
+//        this.authorId = authorId;
+//        this.resolverId = resolverId;
+//        this.statusId = statusId;
+//        this.typeId = typeId;
+//    }
 
     public int getId() {
         return this.id;

@@ -37,7 +37,7 @@ public class User {
         this.firstName = firstName;
     }
 
-    public String getLasttName() {
+    public String getLastName() {
         return this.lastName;
     }
 
@@ -49,7 +49,7 @@ public class User {
         return this.email;
     }
 
-    public void setEmain(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 }

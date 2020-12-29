@@ -1,9 +1,20 @@
 package com.revature.repositories;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.revature.models.Reimbursement;
+import com.revature.utils.ConnectionFactory;
+
 public class ReimbursementDAOPostgres implements IReimbursementDAO {
 
     //NOTE: all of these methods do not support receipts currently
-
+	ConnectionFactory cf = ConnectionFactory.getConnectionFactory();
+	
     public void CreateReimbursement(Reimbursement reimbursement) {
         Connection conn = cf.getConnection();
 		
@@ -16,10 +27,10 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
 			ps.setDouble(1, reimbursement.getAmount());
             ps.setString(2, reimbursement.getSubmitted());
             ps.setString(3, reimbursement.getDescription());
-            ps.setInt(4, reimbursement.getAuthorId();
+            ps.setInt(4, reimbursement.getAuthorId());
             ps.setInt(5, reimbursement.getStatusId());
             ps.setInt(6, reimbursement.getTypeId());
-			psUser.executeUpdate();
+            ps.executeUpdate();
 
 			conn.commit();
 		}
@@ -44,7 +55,7 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
 		}
     }
 
-    public List<Reimbursement> GetAllReimbursements();
+    public List<Reimbursement> GetAllReimbursements() {
 	    Connection conn = cf.getConnection();
 		
 		String sql = "SELECT * FROM reimbursomatic.reimbursements;";
@@ -66,11 +77,13 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
                 int typeId = rs.getInt("type_id");
                 int resolverId = rs.getInt("resolver");
                 int statusId = rs.getInt("status_id");
-
+                
+                Reimbursement r;
                 if (resolved != null) {
-				    Reimbursement r = new Reimbursement(id, amount, submitted, resolved, description, authId, typeId, resolverId, statusId);
+				    r = new Reimbursement(id, amount, submitted, resolved, description, authId, typeId, resolverId, statusId);
                 } else {
-                    Reimbursement r = new Reimbursement(id, amount, submitted, description, authId, typeId);
+                    r = new Reimbursement(id, amount, submitted, authId, typeId);
+                    r.setDescription(description);
                 }
 
                 reimbursements.add(r);
@@ -115,10 +128,12 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
                 int resolverId = rs.getInt("resolver");
                 int statusId = rs.getInt("status_id");
 
+                Reimbursement r;
                 if (resolved != null) {
-				    Reimbursement r = new Reimbursement(id, amount, submitted, resolved, description, authorId, typeId, resolverId, statusId);
+				    r = new Reimbursement(id, amount, submitted, resolved, description, authorId, typeId, resolverId, statusId);
                 } else {
-                    Reimbursement r = new Reimbursement(id, amount, submitted, description, authorId, typeId);
+                    r = new Reimbursement(id, amount, submitted, authorId, typeId);
+                    r.setDescription(description);
                 }
 
                 reimbursements.add(r);
@@ -206,10 +221,12 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
                 int resolverId = rs.getInt("resolver");
                 int statusId = rs.getInt("status_id");
 
+                Reimbursement r;
                 if (resolved != null) {
-				    Reimbursement r = new Reimbursement(id, amount, submitted, resolved, description, authId, typeId, resolverId, statusId);
+				    r = new Reimbursement(id, amount, submitted, resolved, description, authId, typeId, resolverId, statusId);
                 } else {
-                    Reimbursement r = new Reimbursement(id, amount, submitted, description, authId, typeId);
+                    r = new Reimbursement(id, amount, submitted, authId, typeId);
+                    r.setDescription(description);
                 }
 
                 reimbursements.add(r);
@@ -254,10 +271,12 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
                 int typeId = rs.getInt("type_id");
                 int resolverId = rs.getInt("resolver");
 
+                Reimbursement r;
                 if (resolved != null) {
-				    Reimbursement r = new Reimbursement(id, amount, submitted, resolved, description, authId, typeId, resolverId, statusId);
+				    r = new Reimbursement(id, amount, submitted, resolved, description, authId, typeId, resolverId, statusId);
                 } else {
-                    Reimbursement r = new Reimbursement(id, amount, submitted, description, authId, typeId);
+                    r = new Reimbursement(id, amount, submitted, authId, typeId);
+                    r.setDescription(description);
                 }
 
                 reimbursements.add(r);
@@ -305,7 +324,8 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
                 if (resolved != null) {
 				    r = new Reimbursement(id, amount, submitted, resolved, description, authId, typeId, resolverId, statusId);
                 } else {
-                    r = new Reimbursement(id, amount, submitted, description, authId, typeId);
+                    r = new Reimbursement(id, amount, submitted, authId, typeId);
+                    r.setDescription(description);
                 }
 			}
 		}
@@ -337,7 +357,7 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
             ps.setString(2, reimbursement.getSubmitted());
             ps.setString(3, reimbursement.getResolved());
             ps.setString(4, reimbursement.getDescription());
-            ps.setInt(5, reimbursement.getAuthorId();
+            ps.setInt(5, reimbursement.getAuthorId());
             ps.setInt(6, reimbursement.getResolverId());
             ps.setInt(7, reimbursement.getStatusId());
             ps.setInt(8, reimbursement.getTypeId());

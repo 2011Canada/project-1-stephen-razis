@@ -1,5 +1,11 @@
 package com.revature.services;
 
+import java.util.List;
+
+import com.revature.models.User;
+import com.revature.repositories.IUserDAO;
+import com.revature.repositories.UserDAOPostgres;
+
 public class UserServices {
     IUserDAO ud;
     User activeUser;
@@ -28,7 +34,7 @@ public class UserServices {
 
     public void UpdateEmail(String email) {
         activeUser.setEmail(email);
-        ud.updateUser(activeUser);
+        ud.UpdateUser(activeUser);
     }
 
     public User GetUserById(int id) {
