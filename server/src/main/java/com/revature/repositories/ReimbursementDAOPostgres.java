@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +26,12 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
 			
 			PreparedStatement ps = conn.prepareStatement(sqlReimbursement);
 			ps.setDouble(1, reimbursement.getAmount());
-            ps.setString(2, reimbursement.getSubmitted());
+            ps.setTimestamp(2, reimbursement.getSubmitted());
             ps.setString(3, reimbursement.getDescription());
             ps.setInt(4, reimbursement.getAuthorId());
             ps.setInt(5, reimbursement.getStatusId());
             ps.setInt(6, reimbursement.getTypeId());
+            
             ps.executeUpdate();
 
 			conn.commit();
@@ -70,8 +72,8 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
 			while (rs.next()) {
                 int id = rs.getInt("reimbursements_id");
                 double amount = rs.getDouble("amount");
-                String submitted = rs.getString("submitted");
-                String resolved = rs.getString("resolved");
+                Timestamp submitted = rs.getTimestamp("submitted");
+                Timestamp resolved = rs.getTimestamp("resolved");
                 String description = rs.getString("description");
                 int authId = rs.getInt("author");
                 int typeId = rs.getInt("type_id");
@@ -121,8 +123,8 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
 			while (rs.next()) {
                 int id = rs.getInt("reimbursements_id");
                 double amount = rs.getDouble("amount");
-                String submitted = rs.getString("submitted");
-                String resolved = rs.getString("resolved");
+                Timestamp submitted = rs.getTimestamp("submitted");
+                Timestamp resolved = rs.getTimestamp("resolved");
                 String description = rs.getString("description");
                 int typeId = rs.getInt("type_id");
                 int resolverId = rs.getInt("resolver");
@@ -171,8 +173,8 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
 			while (rs.next()) {
                 int id = rs.getInt("reimbursements_id");
                 double amount = rs.getDouble("amount");
-                String submitted = rs.getString("submitted");
-                String resolved = rs.getString("resolved");
+                Timestamp submitted = rs.getTimestamp("submitted");
+                Timestamp resolved = rs.getTimestamp("resolved");
                 String description = rs.getString("description");
                 int authId = rs.getInt("author");
                 int typeId = rs.getInt("type_id");
@@ -214,8 +216,8 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
 			while (rs.next()) {
                 int id = rs.getInt("reimbursements_id");
                 double amount = rs.getDouble("amount");
-                String submitted = rs.getString("submitted");
-                String resolved = rs.getString("resolved");
+                Timestamp submitted = rs.getTimestamp("submitted");
+                Timestamp resolved = rs.getTimestamp("resolved");
                 String description = rs.getString("description");
                 int authId = rs.getInt("author");
                 int resolverId = rs.getInt("resolver");
@@ -264,8 +266,8 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
 			while (rs.next()) {
                 int id = rs.getInt("reimbursements_id");
                 double amount = rs.getDouble("amount");
-                String submitted = rs.getString("submitted");
-                String resolved = rs.getString("resolved");
+                Timestamp submitted = rs.getTimestamp("submitted");
+                Timestamp resolved = rs.getTimestamp("resolved");
                 String description = rs.getString("description");
                 int authId = rs.getInt("author");
                 int typeId = rs.getInt("type_id");
@@ -301,7 +303,7 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
 	public Reimbursement GetReimbursementById(int id) {
         Connection conn = cf.getConnection();
 		
-		String sql = "SELECT * FROM reimbursomatic.reimbursements WHERE reimbursement_id = ?;";
+		String sql = "SELECT * FROM reimbursomatic.reimbursements WHERE reimbursements_id = ?;";
 
 		Reimbursement r = null;
 		
@@ -313,8 +315,8 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
 			
 			while (rs.next()) {
                 double amount = rs.getDouble("amount");
-                String submitted = rs.getString("submitted");
-                String resolved = rs.getString("resolved");
+                Timestamp submitted = rs.getTimestamp("submitted");
+                Timestamp resolved = rs.getTimestamp("resolved");
                 String description = rs.getString("description");
                 int authId = rs.getInt("author");
                 int typeId = rs.getInt("type_id");
@@ -348,14 +350,14 @@ public class ReimbursementDAOPostgres implements IReimbursementDAO {
 	public void UpdateReimbursement(Reimbursement reimbursement) {
         Connection conn = cf.getConnection();
 		
-		String sql = "UPDATE reimbursomatic.users SET amount = ?, submitted = ?, resolved = ?, description = ?, author = ?, resolver = ?, status_id = ?, type_id = ? WHERE reimbursements_id = ?;";
+		String sql = "UPDATE reimbursomatic.reimbursements SET amount = ?, submitted = ?, resolved = ?, description = ?, author = ?, resolver = ?, status_id = ?, type_id = ? WHERE reimbursements_id = ?;";
 		
 		try {
 			
 			PreparedStatement ps = conn.prepareStatement(sql);
             ps.setDouble(1, reimbursement.getAmount());
-            ps.setString(2, reimbursement.getSubmitted());
-            ps.setString(3, reimbursement.getResolved());
+            ps.setTimestamp(2, reimbursement.getSubmitted());
+            ps.setTimestamp(3, reimbursement.getResolved());
             ps.setString(4, reimbursement.getDescription());
             ps.setInt(5, reimbursement.getAuthorId());
             ps.setInt(6, reimbursement.getResolverId());

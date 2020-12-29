@@ -40,7 +40,7 @@ create table reimbursements (
 	author int not null references users(users_id),
 	resolver int references users(users_id),
 	status_id int not null references reimbursement_status(reimbursement_status_id),
-	type_id int not null references reimbursement_status(reimbursement_status_id)
+	type_id int not null references reimbursement_type(reimbursement_type_id)
 );
 
 
@@ -88,6 +88,8 @@ insert into reimbursements (amount, submitted, resolved, description, author, re
 	values (10.00, '2002-07-01 09:15:00', '2002-07-07 10:00:00', 'I ate too much and needed to sleep it off.', 6, 2, 1, 1);
 insert into reimbursements (amount, submitted, description, author, status_id, type_id)
 	values (10.00, '2002-07-03 15:00:00', 'Needed to borrow Appa.', 5, 2, 2);
+insert into reimbursements (amount, submitted, description, author, status_id, type_id)
+	values (10.00, '2002-07-03 15:00:00', 'Needed to borrow Appa again.', 5, 2, 4);
 
 commit;
 

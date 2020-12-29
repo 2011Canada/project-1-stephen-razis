@@ -1,10 +1,13 @@
 package com.revature.models;
 
+import java.sql.Timestamp;
+import java.util.Arrays;
+
 public class Reimbursement {
     private int id;
     private double amount;
-    private String submitted; //may need a datetime object
-    private String resolved; //may need a datetime object
+    private Timestamp submitted; //may need a datetime object
+    private Timestamp resolved; //may need a datetime object
     private String description;
     private Byte[] receipt;
     private int authorId;
@@ -14,11 +17,11 @@ public class Reimbursement {
 
     //default, not resolved and no description
     //if new reimbursement, set the id to 0
-    public Reimbursement(int id, double amount, String submitted, int authorId, int typeId) {
+    public Reimbursement(int id, double amount, Timestamp submitted, int authorId, int typeId) {
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
-        this.resolved = "";
+        this.resolved = null;
         this.description = "";
         this.authorId = authorId;
         this.resolverId = 0;
@@ -27,7 +30,7 @@ public class Reimbursement {
     }
 
     //description   
-    public Reimbursement(int id, double amount, String submitted, String resolved, String description, int authorId, int typeId, int resolverId, int statusId) {
+    public Reimbursement(int id, double amount, Timestamp submitted, Timestamp resolved, String description, int authorId, int typeId, int resolverId, int statusId) {
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
@@ -40,7 +43,7 @@ public class Reimbursement {
     }
 
     //resolved no description
-    public Reimbursement(int id, double amount, String submitted, String resolved, int authorId, int typeId, int resolverId, int statusId) {
+    public Reimbursement(int id, double amount, Timestamp submitted, Timestamp resolved, int authorId, int typeId, int resolverId, int statusId) {
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
@@ -76,11 +79,11 @@ public class Reimbursement {
         this.amount = amount;
     }
 
-    public String getSubmitted() {
+    public Timestamp getSubmitted() {
         return this.submitted;
     }
 
-    public String getResolved() {
+    public Timestamp getResolved() {
         return this.resolved;
     }
 
@@ -127,4 +130,13 @@ public class Reimbursement {
     public void setTypeId(int typeId) {
         this.typeId = typeId;
     }
+
+	@Override
+	public String toString() {
+		return "Reimbursement [id=" + id + ", amount=" + amount + ", submitted=" + submitted + ", resolved=" + resolved
+				+ ", description=" + description + ", receipt=" + Arrays.toString(receipt) + ", authorId=" + authorId
+				+ ", resolverId=" + resolverId + ", statusId=" + statusId + ", typeId=" + typeId + "]";
+	}
+    
+    
 }
