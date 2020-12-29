@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.revature.models.Reimbursement;
+import com.revature.models.User;
 import com.revature.repositories.IReimbursementDAO;
 import com.revature.repositories.IUserDAO;
 import com.revature.repositories.ReimbursementDAOPostgres;
@@ -15,11 +16,9 @@ public class Debugger {
 		IReimbursementDAO rd = new ReimbursementDAOPostgres();
 		IUserDAO ud = new UserDAOPostgres();
 		
-		//RD DAO IS WORKING
 		System.out.println("======================");
 		System.out.println("ReimbursementDAO Tests");
 		System.out.println("======================");
-		System.out.println();
 		
 		
 		//CreateReimbursement
@@ -82,10 +81,37 @@ public class Debugger {
 		System.out.println("======================");
 		System.out.println("UserDAO Tests");
 		System.out.println("======================");
-		System.out.println();
+		User u0;
 		
+		//UpdateUser
+		System.out.println("UPDATE");
+		User me = ud.GetUserById(1);
+		me.setEmail("stephen.razis@revature.net");
+		ud.UpdateUser(me);
+		System.out.println(ud.GetUserById(1));
 		
+		//GetAllUsers
+		System.out.println("ALL");
+		List<User> users = ud.GetAllUsers();
+		for (User u : users) {
+			System.out.println(u);
+		}
 		
+		//GetAllUsersByRole
+		System.out.println("ROLES");
+		users = ud.GetAllUsersByRole(2);
+		for (User u : users) {
+			System.out.println(u);
+		}
+		
+		//FindUserByCredentials
+		System.out.println("CREDENTIAL CHECK");
+		u0 = ud.FindUserByCredentials("stephenrazis", "Password123!");
+		System.out.println(u0);
+		
+		//GetUserById
+		System.out.println("ID");
+		u0 = ud.GetUserById(2);
+		System.out.println(u0);
 	}
-	
 }

@@ -135,7 +135,7 @@ public class UserDAOPostgres implements IUserDAO {
 	public User FindUserByCredentials(String username, String password) {
         Connection conn = cf.getConnection();
 		
-		String sql = "SELECT * FROM reimbursomatic.users WHERE users_id = ? AND users_password = ?;";
+		String sql = "SELECT * FROM reimbursomatic.users WHERE username = ? AND users_password = ?;";
 
 		User u = null;
 		
