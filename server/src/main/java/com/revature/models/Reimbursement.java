@@ -111,7 +111,7 @@ public class Reimbursement {
         return this.resolverId;
     }
 
-    public void setResolverId(int resovlerId) {
+    public void setResolverId(int resolverId) {
         this.resolverId = resolverId;
     }
 
