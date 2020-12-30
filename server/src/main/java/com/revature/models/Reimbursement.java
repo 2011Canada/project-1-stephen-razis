@@ -6,8 +6,8 @@ import java.util.Arrays;
 public class Reimbursement {
     private int id;
     private double amount;
-    private Timestamp submitted; //may need a datetime object
-    private Timestamp resolved; //may need a datetime object
+    private Timestamp submitted;
+    private Timestamp resolved;
     private String description;
     private Byte[] receipt;
     private int authorId;

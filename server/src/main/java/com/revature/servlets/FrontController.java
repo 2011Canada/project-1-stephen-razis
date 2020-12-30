@@ -8,9 +8,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.revature.controllers.AuthController;
+
 public class FrontController extends HttpServlet {
 	private static final long serialVersionUID = 13455643L;
 
+	private AuthController authController = new AuthController();
+	
     protected void directControl(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
     	//be our front controller
     	String URI = req.getRequestURI().substring(req.getContextPath().length(), req.getRequestURI().length());
@@ -24,8 +28,7 @@ public class FrontController extends HttpServlet {
     			writer.write("Method not supported.");
     			break;
     		case "POST":
-    			res.setStatus(400);
-    			writer.write("You hit what you were supposed to.");
+    			authController.userLogin(req, res);
     			break;
     		case "PUT":
     			res.setStatus(400);

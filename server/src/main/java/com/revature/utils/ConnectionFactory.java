@@ -17,6 +17,13 @@ public class ConnectionFactory {
 	
 	
 	private ConnectionFactory(int numberOfConnections) {
+		
+		try {
+			DriverManager.registerDriver(new org.postgresql.Driver());
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		
 		String url = System.getenv("DB_URL");
 		String user = System.getenv("DB_USER");
 		String password = System.getenv("DB_PASSWORD");

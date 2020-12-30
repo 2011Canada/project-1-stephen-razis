@@ -18,6 +18,7 @@ public class UserServices {
 
     public User Login(String username, String password) {
         User u = ud.FindUserByCredentials(username, password);
+        activeUser = u;
         
         return u;
     }
