@@ -19,10 +19,10 @@ client/reimbursomatic-view/.pnp
 .pnp.js
 
 # testing
-client/reimbursomatic-view/coverage
+/coverage
 
 # production
-client/reimbursomatic-view/build
+/build
 
 # misc
 .DS_Store
