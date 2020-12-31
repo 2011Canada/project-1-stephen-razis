@@ -1,33 +1,39 @@
 import React, { useState } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Link, Route } from 'react-router-dom'
 import { LoginForm } from './components/login/LoginForm';
 import { Header } from './components/Header';
-import { Footer } from './components/Footer';
-import { Home } from './components/home/Home';
+import { Home } from './components/Home/Home';
 import { ThemeProvider } from '@material-ui/core';
 import { theme } from './components/ThemeProvider';
+
+export const UserContext = React.createContext<any>(undefined)
 
 function App() {
   const [user, changeUser] = useState();
 
   return (
     <div className="App">
-      <ThemeProvider theme={theme}>
-        <Header />
-        <Router>
+      <UserContext.Provider value={user}>
+        <ThemeProvider theme={theme}>
 
-          <Route path="/login">
-            <LoginForm />
-          </Route>
+          <Router>
+            <Header />
 
-          <Route path="/">
-            <Home currentUser={user}/>
-          </Route>
+            <Route path="/login">
+              <LoginForm currentUser={user} updateCurrentUser={changeUser}/>
+            </Route>
+            <Route path="/">
+              <Home currentUser={user}/>
+            </Route>
 
-        </Router>
-        <Footer />
+            <Link to="/"> Home</Link>
+            <br></br>
+            <Link to="/login"> Login</Link>
+          </Router>
+
         </ThemeProvider>
+      </UserContext.Provider>
     </div>
   );
 }

@@ -1,7 +1,7 @@
-import { Button, Grid, makeStyles, TextField, withStyles } from '@material-ui/core';
+import { Button, Grid, makeStyles, TextField } from '@material-ui/core';
 import React, { SyntheticEvent, useState } from 'react';
 import { Redirect } from 'react-router';
-import User from '../models/User';
+import User from '../../models/User';
 import { getLogin } from '../remote/reimbursomatic/reimbursomatic-functions';
 
 const useStyles = makeStyles((theme) => ({
@@ -35,18 +35,26 @@ const useStyles = makeStyles((theme) => ({
           borderColor: theme.palette.secondary.main,
         },
       },
-      grid: {}
+      grid: {
+      }
   }));
 
 
 interface ILoginProps {
+    updateCurrentUser: (u:any) => void
     currentUser:User
 }
 
-export const LoginForm : React.FunctionComponent<any> = (props:ILoginProps) => {
+//TODO:
+//  - Display login errors
+
+//If I have time:
+//  - User registration
+//  - Animations
+
+export const LoginForm : React.FunctionComponent<ILoginProps> = (props) => {
     const [username, changeUsername] = useState("");
     const [password, changePassword] = useState("");
-    const [user, changeUser] = useState(props.currentUser);
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         changeUsername(e.target.value)
@@ -61,7 +69,7 @@ export const LoginForm : React.FunctionComponent<any> = (props:ILoginProps) => {
 
         try {
             let user = await getLogin(username, password)
-            changeUser(user)
+            props.updateCurrentUser(user)
             
             console.log("successful login")
         }catch(e){
@@ -74,13 +82,8 @@ export const LoginForm : React.FunctionComponent<any> = (props:ILoginProps) => {
     const classes = useStyles();
     //REDIRECT NOT WORKING
     return (
-        user ?
-        <Redirect
-            to={{
-            pathname: "/",
-            state: { currentUser: user }
-          }}
-        />
+        props.currentUser ?
+        <Redirect to="/" />
         :
         <form onSubmit={submitLogin}>
             <h1 className="LoginHeader">
