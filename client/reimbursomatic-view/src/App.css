@@ -1,5 +1,10 @@
 .App {
   text-align: center;
+  background: rgb(55,55,55);
+  background: radial-gradient(circle at top left, rgba(55,55,55,1) 10%, rgba(28,28,28,1) 45%); 
+  background-size:cover;
+  height: 100vh;
+  color: white;
 }
 
 .App-logo {
@@ -15,7 +20,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,7 +30,7 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: #262626;
 }
 
 @keyframes App-logo-spin {
@@ -35,4 +40,17 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+h1 {
+  color:  #a5d6a7;
+}
+
+.LoginHeader {
+  padding-top: 5vh;
+  padding-bottom: 2vh;
+}
+
+.MuiToolbar-root {
+  background-color: #222222;
 }

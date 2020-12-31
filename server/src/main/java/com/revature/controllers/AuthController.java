@@ -25,10 +25,15 @@ public class AuthController {
 		
 		HttpSession sess = req.getSession();
 		
-		sess.setAttribute("User-Role", u.getRoleId());
-		
-		res.setStatus(200);
-		res.getWriter().write(om.writeValueAsString(u));
+		if (u != null) {
+			sess.setAttribute("User-Role", u.getRoleId());
+			res.setStatus(200);
+			res.getWriter().write(om.writeValueAsString(u));
+		}
+		else {
+			res.sendError(401, "Invalid Authentication");
+//			res.getWriter().write(om.writeValueAsString(u));
+		}
 	}
 	
 }
