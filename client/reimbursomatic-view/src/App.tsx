@@ -18,7 +18,7 @@ function App() {
         <ThemeProvider theme={theme}>
 
           <Router>
-            <Header />
+            <Header currentUser={user} updateCurrentUser={changeUser}/>
 
             <Route path="/login">
               <LoginForm currentUser={user} updateCurrentUser={changeUser}/>

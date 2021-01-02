@@ -44,7 +44,7 @@ public class FrontController extends HttpServlet {
     			break;
     		}
     		break;
-    	case "/users":
+    	case "/users/":
     		switch (req.getMethod()) {
     		case "GET":
     			res.setStatus(400);

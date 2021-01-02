@@ -1,6 +1,8 @@
-import React from 'react'
-import { Redirect } from 'react-router'
-import User from '../../models/User'
+import { Button,Theme, createStyles, makeStyles } from '@material-ui/core';
+import React from 'react';
+import { Redirect } from 'react-router';
+import User from '../../models/User';
+import Divider from '@material-ui/core/Divider';
 
 interface IUser {
     currentUser: User
@@ -19,12 +21,41 @@ interface IUser {
 //  - Sorting options
 //  - Change user info option
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: '50%',
+      height: '1px',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      maxWidth: 360,
+      backgroundColor: theme.palette.primary.main,
+    },
+    ticketManagementButton: {
+        marginTop: '2em',
+        marginBottom: '2em'
+    },
+  }),
+);
+
+const getTicketManagementButton = (user:User, classStyle:any) => {
+    if (user.roleId > 0 && user.roleId <= 2) {
+        return <Button variant="outlined" color="primary" className={classStyle.ticketManagementButton}>Ticket Management</Button>
+    }
+}
+
 export const Home : React.FunctionComponent<any> = (props:IUser) => {
-    console.log(props.currentUser)
+    const classes = useStyles();
     return (
         (props.currentUser) ?
         <div>
-            <p>Welcome to the Reimbursomatic Dashboard!</p>
+            <br />
+            <h1>Dashboard</h1>
+            <br />
+            <Divider variant="middle" className={classes.root}/>
+            { getTicketManagementButton(props.currentUser, classes) }
+            <br />
+            <Button variant="outlined" color="primary">Test URI</Button>
         </div>
         :
         <Redirect to="/login" />
