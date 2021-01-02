@@ -39,11 +39,7 @@ public class UserServices {
     }
 
     public User GetUserById(int id) {
-        int permissionLevel = 2;
-        if (id == activeUser.getId() || (activeUser.getRoleId() <= permissionLevel && activeUser.getRoleId() > 0)) {
-            return ud.GetUserById(id);
-        }
-        return null;
+    	return ud.GetUserById(id);
     }
 
     public List<User> GetAllUsers() {

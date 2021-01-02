@@ -27,9 +27,9 @@ function App() {
               <Home currentUser={user}/>
             </Route>
 
-            <Link to="/"> Home</Link>
+            {/* <Link to="/"> Home</Link>
             <br></br>
-            <Link to="/login"> Login</Link>
+            <Link to="/login"> Login</Link> */}
           </Router>
 
         </ThemeProvider>

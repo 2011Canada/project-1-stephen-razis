@@ -1,11 +1,17 @@
 import { Button,Theme, createStyles, makeStyles } from '@material-ui/core';
-import React from 'react';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { Redirect } from 'react-router';
 import User from '../../models/User';
 import Divider from '@material-ui/core/Divider';
+import { getCurrentUsersReimbursements, sendTestURI } from '../remote/reimbursomatic/reimbursomatic-functions';
+import Reimbursement from '../../models/Reimbursement';
 
 interface IUser {
     currentUser: User
+}
+
+interface IReimbursement {
+    currentReimbursement: Reimbursement
 }
 
 //This page shows a user's info and their past tickets
@@ -46,6 +52,34 @@ const getTicketManagementButton = (user:User, classStyle:any) => {
 
 export const Home : React.FunctionComponent<any> = (props:IUser) => {
     const classes = useStyles();
+
+    const [reimbursements, setReimbursements] = useState([]);
+
+    const testURI = async (e:SyntheticEvent) => {
+        e.preventDefault()
+        try {
+            let res = await sendTestURI(props.currentUser)
+            console.log(res)
+        }catch(e){
+            console.log(e)
+            //display the error in some way
+        }
+    }
+
+    useEffect(() => {
+        const attemptReimbursementGrab = async () => {
+            try {
+                let reimbursements:Reimbursement[] = await getCurrentUsersReimbursements(props.currentUser)
+                setReimbursements(reimbursements)
+            }
+            catch (e) {
+                console.log(e)
+            }
+        }
+        
+        attemptReimbursementGrab()
+    },[props.currentUser])
+
     return (
         (props.currentUser) ?
         <div>
@@ -55,7 +89,9 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
             <Divider variant="middle" className={classes.root}/>
             { getTicketManagementButton(props.currentUser, classes) }
             <br />
-            <Button variant="outlined" color="primary">Test URI</Button>
+            <Button variant="outlined" color="primary" onClick={testURI}>Test URI</Button>
+            <div>{JSON.stringify(props.currentUser)}</div>
+            {reimbursements.map(r => <div>{JSON.stringify(r)}</div>)}
         </div>
         :
         <Redirect to="/login" />
