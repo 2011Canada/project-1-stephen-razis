@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Link, Redirect, Route } from 'react-router-dom'
 import { LoginForm } from './components/login/LoginForm';
 import { Header } from './components/Header';
 import { Home } from './components/Home/Home';
@@ -20,7 +20,9 @@ function App() {
 
           <Router>
             <Header currentUser={user} updateCurrentUser={changeUser}/>
-
+            <Route path="/">
+              <Redirect to="/home"/>
+            </Route>
             <Route path="/login">
               <LoginForm currentUser={user} updateCurrentUser={changeUser}/>
             </Route>

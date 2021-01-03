@@ -1,4 +1,4 @@
-import { Button,Theme, createStyles, makeStyles, Container } from '@material-ui/core';
+import { Button,Theme, createStyles, makeStyles, Container, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, InputAdornment, Input } from '@material-ui/core';
 import React, { ReactChild, SyntheticEvent, useEffect, useState } from 'react';
 import { Redirect, useHistory } from 'react-router';
 import User from '../../models/User';
@@ -19,6 +19,12 @@ import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { Link } from 'react-router-dom';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useRowStyles = makeStyles({
   root: {
@@ -100,12 +106,9 @@ interface IUser {
 
 //This page shows a user's info and their past tickets
 //On a button press, a form will popup to submit a new ticket
-//If the user is an admin or HR, they will have the option to go to the ticket management portal
 
 //This page should have:
-//  - A card representing the current user
-//  - A table (exactly like the TicketManager), that shows only their tickets (sorted by date created)
-//  - A button to logout
+// ticket creation (see 'Form Dialog' in Material UI)
 
 //If I have time:
 //  - Sorting options
@@ -147,6 +150,14 @@ const useStyles = makeStyles((theme: Theme) =>
     tableCell: {
         color: 'white',
     },
+    dialog: {
+      backgroundColor: '#676767',
+      color: theme.palette.primary.main
+    },
+    formInput: {
+      color: 'white',
+      borderColor: 'white'
+    }
   }),
 );
 
@@ -154,144 +165,198 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
     const classes = useStyles();
 
     const [reimbursements, setReimbursements] = useState([]);
+    const [open, setOpen] = React.useState(false);
+    const [reimbursementType, setReimbursementType] = React.useState('1');
 
-    let rows:any[] = [];
-    reimbursements.forEach((item) => {
-        rows.push(createData(
-            item.id, 
-            item.amount, 
-            item.submitted, 
-            item.resolved, 
-            item.authorId, 
-            item.resolverId,
-            item.statusId,
-            item.typeId,
-            item.description))
-    })
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleReimbursementTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setReimbursementType((event.target as HTMLInputElement).value);
+  };
+
+  let rows:any[] = [];
+  reimbursements.forEach((item) => {
+    rows.push(createData(
+        item.id, 
+        item.amount, 
+        item.submitted, 
+        item.resolved, 
+        item.authorId, 
+        item.resolverId,
+        item.statusId,
+        item.typeId,
+        item.description))
+  })
 
 
-    const testURI = async (e:SyntheticEvent) => {
-        e.preventDefault()
-        try {
-            let res = await sendTestURI(props.currentUser)
-            console.log(res)
-        }catch(e){
-            console.log(e)
-            //display the error in some way
-        }
+  const testURI = async (e:SyntheticEvent) => {
+      e.preventDefault()
+      try {
+          let res = await sendTestURI(props.currentUser)
+          console.log(res)
+      }catch(e){
+          console.log(e)
+          //display the error in some way
+      }
     }
 
-    const showTicketForm = () => {
 
-    }
+  const getTicketManagementButton = (user:User, classStyle:any) => {
+      if (user.roleId > 0 && user.roleId <= 2) {
+          return <Link to="/manager"><Button variant="outlined" color="primary">Ticket Management</Button></Link>
+      }
+  }
 
+  useEffect(() => {
+      const attemptReimbursementGrab = async () => {
+          try {
+              let reimbursements:Reimbursement[] = await getCurrentUsersReimbursements(props.currentUser)
+              setReimbursements(reimbursements)
+          }
+          catch (e) {
+              console.log(e)
+          }
+      }
+      
+      attemptReimbursementGrab()
+  },[props.currentUser])
 
-    const getTicketManagementButton = (user:User, classStyle:any) => {
-        if (user.roleId > 0 && user.roleId <= 2) {
-            return <Link to="/manager"><Button variant="outlined" color="primary">Ticket Management</Button></Link>
-        }
-    }
+  return (
+      (props.currentUser) ?
+      <div>
+          <br />
+          <h1>Dashboard</h1>
+          <br />
+          <Divider variant="middle" className={classes.root}/>
+          { getTicketManagementButton(props.currentUser, classes) }
 
-    useEffect(() => {
-        const attemptReimbursementGrab = async () => {
-            try {
-                let reimbursements:Reimbursement[] = await getCurrentUsersReimbursements(props.currentUser)
-                setReimbursements(reimbursements)
-            }
-            catch (e) {
-                console.log(e)
-            }
-        }
+          {/* User info */}
+          <h2 className={classes.headers}>Your Information</h2>
+          <TableContainer component={Paper} className={classes.userInfo}>
+              <Table>
+                  <TableHead>
+                  <TableRow>
+                      <TableCell />
+                      <TableCell className={classes.tableCell}>ID:</TableCell>
+                      <TableCell align="left" className={classes.tableCell}>{props.currentUser.id}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                      <TableCell />
+                      <TableCell className={classes.tableCell}>Username:</TableCell>
+                      <TableCell align="left" className={classes.tableCell}>{props.currentUser.username}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                      <TableCell />
+                      <TableCell className={classes.tableCell}>First Name:</TableCell>
+                      <TableCell align="left" className={classes.tableCell}>{props.currentUser.firstName}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                      <TableCell />
+                      <TableCell className={classes.tableCell}>Last Name:</TableCell>
+                      <TableCell align="left" className={classes.tableCell}>{props.currentUser.lastName}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                      <TableCell />
+                      <TableCell className={classes.tableCell}>Email:</TableCell>
+                      <TableCell align="left" className={classes.tableCell}>{props.currentUser.email}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                      <TableCell />
+                      <TableCell className={classes.tableCell}>Role ID:</TableCell>
+                      <TableCell align="left" className={classes.tableCell}>{props.currentUser.roleId}</TableCell>
+                  </TableRow>
+                  </TableHead>
+              </Table>
+
+          {/* Past tickets */}
+          </TableContainer>
+          <h2 className={classes.headers}>Your Past Tickets</h2>
+          <TableContainer component={Paper} className={classes.table}>
+              <Table aria-label="collapsible table">
+                  <TableHead>
+                  <TableRow>
+                      <TableCell />
+                      <TableCell className={classes.tableCell}>Reimbursement ID</TableCell>
+                      <TableCell align="right" className={classes.tableCell}>Amount</TableCell>
+                      <TableCell align="right" className={classes.tableCell}>Date Submitted</TableCell>
+                      <TableCell align="right" className={classes.tableCell}>Date Resolved</TableCell>
+                      <TableCell align="right" className={classes.tableCell}>Author ID</TableCell>
+                      <TableCell align="right" className={classes.tableCell}>Resolver ID</TableCell>
+                      <TableCell align="right" className={classes.tableCell}>Status ID</TableCell>
+                      <TableCell align="right" className={classes.tableCell}>Type ID</TableCell>
+                  </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {rows.map((row) => (
+                      <Row key={row.id} row={row} />
+                  ))}
+                  <TableRow>
+                      <TableCell />
+                      <TableCell />
+                      <TableCell />
+                      <TableCell />
+                      <TableCell />
+                      <TableCell />
+                      <TableCell />
+                      <TableCell />
+                      <TableCell>
+                      <Button variant="outlined" color="primary" onClick={handleClickOpen}>New Ticket</Button>
+                      </TableCell>
+                  </TableRow>
+                  </TableBody>
+              </Table>
+          </TableContainer>
         
-        attemptReimbursementGrab()
-    },[props.currentUser])
-
-    return (
-        (props.currentUser) ?
-        <div>
-            <br />
-            <h1>Dashboard</h1>
-            <br />
-            <Divider variant="middle" className={classes.root}/>
-            { getTicketManagementButton(props.currentUser, classes) }
-            {/* <Button variant="outlined" color="primary" onClick={testURI}>Test URI</Button>
-            <div>{JSON.stringify(props.currentUser)}</div>
-            {reimbursements.map(r => <div>{JSON.stringify(r)}</div>)} */}
-            <h2 className={classes.headers}>Your Information</h2>
-            <TableContainer component={Paper} className={classes.userInfo}>
-                <Table>
-                    <TableHead>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell className={classes.tableCell}>ID:</TableCell>
-                        <TableCell align="left" className={classes.tableCell}>{props.currentUser.id}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell className={classes.tableCell}>Username:</TableCell>
-                        <TableCell align="left" className={classes.tableCell}>{props.currentUser.username}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell className={classes.tableCell}>First Name:</TableCell>
-                        <TableCell align="left" className={classes.tableCell}>{props.currentUser.firstName}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell className={classes.tableCell}>Last Name:</TableCell>
-                        <TableCell align="left" className={classes.tableCell}>{props.currentUser.lastName}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell className={classes.tableCell}>Email:</TableCell>
-                        <TableCell align="left" className={classes.tableCell}>{props.currentUser.email}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell className={classes.tableCell}>Role ID:</TableCell>
-                        <TableCell align="left" className={classes.tableCell}>{props.currentUser.roleId}</TableCell>
-                    </TableRow>
-                    </TableHead>
-                </Table>
-            </TableContainer>
-            <h2 className={classes.headers}>Your Past Tickets</h2>
-            <TableContainer component={Paper} className={classes.table}>
-                <Table aria-label="collapsible table">
-                    <TableHead>
-                    <TableRow>
-                        <TableCell />
-                        <TableCell className={classes.tableCell}>Reimbursement ID</TableCell>
-                        <TableCell align="right" className={classes.tableCell}>Amount</TableCell>
-                        <TableCell align="right" className={classes.tableCell}>Date Submitted</TableCell>
-                        <TableCell align="right" className={classes.tableCell}>Date Resolved</TableCell>
-                        <TableCell align="right" className={classes.tableCell}>Author ID</TableCell>
-                        <TableCell align="right" className={classes.tableCell}>Resolver ID</TableCell>
-                        <TableCell align="right" className={classes.tableCell}>Status ID</TableCell>
-                        <TableCell align="right" className={classes.tableCell}>Type ID</TableCell>
-                    </TableRow>
-                    </TableHead>
-                    <TableBody>
-                    {rows.map((row) => (
-                        <Row key={row.id} row={row} />
-                    ))}
-                    <TableRow>
-                        <TableCell />
-                        <TableCell />
-                        <TableCell />
-                        <TableCell />
-                        <TableCell />
-                        <TableCell />
-                        <TableCell />
-                        <TableCell />
-                        <TableCell>
-                        <Button variant="outlined" color="primary" onClick={showTicketForm}>New Ticket</Button>
-                        </TableCell>
-                    </TableRow>
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </div>
-        :
-        <Redirect to="/login" />
-    )
+        {/* Dialog popup */}
+          <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title" className={classes.dialog} style={{backgroundColor:'#333333'}}>New Ticket</DialogTitle>
+            <DialogContent className={classes.dialog}>
+              <DialogContentText style={{color:'black'}}>
+                Please fill out the following information to create a new reimbursement request.
+              </DialogContentText>
+              <Input 
+                startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                autoFocus
+                margin="dense"
+                id="amount"
+                type=""
+                fullWidth
+              />
+              <FormControl component="fieldset" style={{marginTop: '2em', marginBottom: '0.5em', color: 'black'}}>
+                <FormLabel component="legend">Expense Type</FormLabel>
+                <RadioGroup aria-label="expense type" name="expenseType" value={reimbursementType} onChange={handleReimbursementTypeChange}>
+                  <FormControlLabel value="1" control={<Radio />} label="Lodging" />
+                  <FormControlLabel value="2" control={<Radio />} label="Travel" />
+                  <FormControlLabel value="3" control={<Radio />} label="Food" />
+                  <FormControlLabel value="4" control={<Radio />} label="Other" />
+                </RadioGroup>
+              </FormControl>
+              <TextField
+                margin="dense"
+                id="description"
+                label="Description"
+                type=""
+                fullWidth
+                multiline
+              />
+            </DialogContent>
+            <DialogActions className={classes.dialog}>
+              <Button onClick={handleClose} variant="outlined" color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handleClose} variant="outlined" color="primary">
+                Submit
+              </Button>
+            </DialogActions>
+          </Dialog>
+      </div>
+      :
+      <Redirect to="/login" />
+  )
 }

@@ -80,7 +80,6 @@ export const LoginForm : React.FunctionComponent<ILoginProps> = (props) => {
     }
 
     const classes = useStyles();
-    //REDIRECT NOT WORKING
     return (
         props.currentUser ?
         <Redirect to="/home" />
