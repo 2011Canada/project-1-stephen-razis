@@ -1,9 +1,9 @@
-import { Button,Theme, createStyles, makeStyles, Container, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, InputAdornment, Input } from '@material-ui/core';
-import React, { ReactChild, SyntheticEvent, useEffect, useState } from 'react';
-import { Redirect, useHistory } from 'react-router';
+import { Button,Theme, createStyles, makeStyles, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, InputAdornment, Input } from '@material-ui/core';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
+import { Redirect } from 'react-router';
 import User from '../../models/User';
 import Divider from '@material-ui/core/Divider';
-import { getCurrentUsersReimbursements, sendTestURI } from '../remote/reimbursomatic/reimbursomatic-functions';
+import { getCurrentUsersReimbursements, sendTestURI, TestFormSend, SendReimbursementRequest } from '../remote/reimbursomatic/reimbursomatic-functions';
 import Reimbursement from '../../models/Reimbursement';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
@@ -103,7 +103,6 @@ interface IUser {
     currentUser: User
 }
 
-
 //This page shows a user's info and their past tickets
 //On a button press, a form will popup to submit a new ticket
 
@@ -166,7 +165,11 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
 
     const [reimbursements, setReimbursements] = useState([]);
     const [open, setOpen] = React.useState(false);
-    const [reimbursementType, setReimbursementType] = React.useState('1');
+    const [formSubmitted, setFormSubmit] = React.useState(0);
+
+    const [formAmount, setFormAmount] = React.useState('0');
+    const [formExpenseType, setFormExpenseType] = React.useState('1');
+    const [formDescription, setFormDescription] = React.useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -176,9 +179,17 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
     setOpen(false);
   };
 
-  const handleReimbursementTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setReimbursementType((event.target as HTMLInputElement).value);
-  };
+  const handleFormAmount = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormAmount((event.target as HTMLInputElement).value);
+  }
+
+  const handleFormExpenseType = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormExpenseType((event.target as HTMLInputElement).value);
+  }
+
+  const handleFormDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormDescription((event.target as HTMLInputElement).value);
+  }
 
   let rows:any[] = [];
   reimbursements.forEach((item) => {
@@ -195,22 +206,42 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
   })
 
 
-  const testURI = async (e:SyntheticEvent) => {
-      e.preventDefault()
-      try {
-          let res = await sendTestURI(props.currentUser)
-          console.log(res)
-      }catch(e){
-          console.log(e)
-          //display the error in some way
-      }
-    }
+  // const testURI = async (e:SyntheticEvent) => {
+  //     e.preventDefault()
+  //     try {
+  //         let res = await sendTestURI(props.currentUser)
+  //         console.log(res)
+  //     }catch(e){
+  //         console.log(e)
+  //         //display the error in some way
+  //     }
+  //   }
 
 
   const getTicketManagementButton = (user:User, classStyle:any) => {
       if (user.roleId > 0 && user.roleId <= 2) {
           return <Link to="/manager"><Button variant="outlined" color="primary">Ticket Management</Button></Link>
       }
+  }
+
+  const submitReimbursementRequest = async(event:SyntheticEvent) => {
+    event.preventDefault()
+
+    handleClose()
+
+    //TODO: handle input cleaning better
+    
+    try {
+      await SendReimbursementRequest(formAmount, formExpenseType, formDescription, props.currentUser.id)
+
+      setFormAmount('0')
+      setFormExpenseType('1')
+      setFormDescription('')
+      setFormSubmit(formSubmitted + 1)
+    }
+    catch(e) {
+      console.log(e)
+    }
   }
 
   useEffect(() => {
@@ -225,7 +256,7 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
       }
       
       attemptReimbursementGrab()
-  },[props.currentUser])
+  },[props.currentUser, formSubmitted])
 
   return (
       (props.currentUser) ?
@@ -327,10 +358,12 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
                 id="amount"
                 type=""
                 fullWidth
+                value={formAmount}
+                onChange={handleFormAmount}
               />
               <FormControl component="fieldset" style={{marginTop: '2em', marginBottom: '0.5em', color: 'black'}}>
                 <FormLabel component="legend">Expense Type</FormLabel>
-                <RadioGroup aria-label="expense type" name="expenseType" value={reimbursementType} onChange={handleReimbursementTypeChange}>
+                <RadioGroup aria-label="expense type" name="expenseType" value={formExpenseType} onChange={handleFormExpenseType}>
                   <FormControlLabel value="1" control={<Radio />} label="Lodging" />
                   <FormControlLabel value="2" control={<Radio />} label="Travel" />
                   <FormControlLabel value="3" control={<Radio />} label="Food" />
@@ -344,13 +377,15 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
                 type=""
                 fullWidth
                 multiline
+                value={formDescription}
+                onChange={handleFormDescription}
               />
             </DialogContent>
             <DialogActions className={classes.dialog}>
               <Button onClick={handleClose} variant="outlined" color="primary">
                 Cancel
               </Button>
-              <Button onClick={handleClose} variant="outlined" color="primary">
+              <Button onClick={submitReimbursementRequest} variant="outlined" color="primary">
                 Submit
               </Button>
             </DialogActions>

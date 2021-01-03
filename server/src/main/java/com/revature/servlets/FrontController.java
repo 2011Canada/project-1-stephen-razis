@@ -74,6 +74,35 @@ public class FrontController extends HttpServlet {
 	    			writer.write("Method not supported.");
 	    			break;
 	    		}
+	    		break;	
+	    	case "reimbursements":
+	    		switch (req.getMethod()) {
+	    		case "GET":
+	    			res.setStatus(400);
+	    			writer.write("Method not supported.");
+	    			break;
+	    		case "POST":
+	    			if (splitURI.length > 2 && splitURI[2].equals("create")) {
+	    				reimbursementController.CreateNewReimbursement(req, res);
+	    			}
+	    			else {
+	    				res.setStatus(400);
+		    			writer.write("Method not supported.");
+	    			}
+	    			break;
+	    		case "PUT":
+	    			res.setStatus(400);
+	    			writer.write("Method not supported.");
+	    			break;
+	    		case "DELETE":
+	    			res.setStatus(400);
+	    			writer.write("Method not supported.");
+	    			break;
+	    		default:
+	    			res.setStatus(400);
+	    			writer.write("Method not supported.");
+	    			break;
+	    		}
 	    		break;
 	    	default:
 	    		res.setStatus(404);

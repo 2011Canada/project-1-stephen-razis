@@ -14,6 +14,8 @@ import com.revature.models.Reimbursement;
 import com.revature.models.User;
 import com.revature.services.ReimbursementServices;
 import com.revature.services.UserServices;
+import com.revature.models.ObjectMapperSucks;
+
 
 public class ReimbursementController {
 
@@ -47,6 +49,22 @@ public class ReimbursementController {
 		else {
 			res.setStatus(400);
 			writer.write("Method not supported.");
+		}
+	}
+	
+	public void CreateNewReimbursement (HttpServletRequest req, HttpServletResponse res) throws JsonParseException, JsonMappingException, IOException, NullPointerException, NumberFormatException {
+		PrintWriter writer = res.getWriter();
+		try {
+			ObjectMapperSucks oms = om.readValue(req.getInputStream(), ObjectMapperSucks.class);
+			Reimbursement r = oms.parseToReimbursement();
+			
+			ReimbursementServices rs = new ReimbursementServices(null);
+			 rs.CreateReimbursementRequest(r);
+			 res.setStatus(200);
+			 writer.write("New reimbursement has been created.");
+		
+		} catch(Exception e) {
+			writer.write(e.getMessage());
 		}
 	}
 	

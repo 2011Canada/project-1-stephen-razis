@@ -15,6 +15,25 @@ public class Reimbursement {
     private int statusId;   //may want to make this an enum
     private int typeId;     //may want to make this an enum
 
+    public Reimbursement() {
+		super();
+	}
+    
+  //if new reimbursement, set the id to 0
+    public Reimbursement(int id, double amount, String submitted, String description, int authorId, int typeId) {
+    	super();
+    	
+        this.id = id;
+        this.amount = amount;
+        this.submitted = Timestamp.valueOf(submitted);
+        this.resolved = null;
+        this.description = description;
+        this.authorId = authorId;
+        this.resolverId = 0;
+        this.statusId = 2;
+        this.typeId = typeId;
+    }
+    
     //default, not resolved and no description
     //if new reimbursement, set the id to 0
     public Reimbursement(int id, double amount, Timestamp submitted, int authorId, int typeId) {
