@@ -83,7 +83,7 @@ export const LoginForm : React.FunctionComponent<ILoginProps> = (props) => {
     //REDIRECT NOT WORKING
     return (
         props.currentUser ?
-        <Redirect to="/" />
+        <Redirect to="/home" />
         :
         <form onSubmit={submitLogin}>
             <h1 className="LoginHeader">

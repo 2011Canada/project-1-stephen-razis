@@ -6,6 +6,7 @@ import { Header } from './components/Header';
 import { Home } from './components/Home/Home';
 import { ThemeProvider } from '@material-ui/core';
 import { theme } from './components/ThemeProvider';
+import { TicketManager } from './components/ticket-manager/TicketManager';
 
 export const UserContext = React.createContext<any>(undefined)
 
@@ -23,13 +24,13 @@ function App() {
             <Route path="/login">
               <LoginForm currentUser={user} updateCurrentUser={changeUser}/>
             </Route>
-            <Route path="/">
+            <Route path="/home">
               <Home currentUser={user}/>
             </Route>
-
-            {/* <Link to="/"> Home</Link>
-            <br></br>
-            <Link to="/login"> Login</Link> */}
+            <Route path="/manager">
+              <TicketManager currentUser={user}/>
+            </Route>
+            {/* {<Link to="/manager">Ticket Management</Link>} */}
           </Router>
 
         </ThemeProvider>
