@@ -52,10 +52,14 @@ function getFormattedDateTimeForCreate() {
     let out: string = ""
     let date = new Date();
 
+    let month: string = (date.getMonth() + 1 < 10) ? (`0` + String(date.getMonth() + 1)) : String(date.getMonth() + 1)
     let day: string = (date.getDate() < 10) ? (`0` + String(date.getDate())) : String(date.getDate())
+    let hours: string = (date.getHours() < 10) ? (`0` + String(date.getHours())) : String(date.getHours())
+    let minutes: string = date.getMinutes() < 10 ? (`0` + String(date.getMinutes())) : String(date.getMinutes())
+    let seconds: string = date.getSeconds() < 10 ? (`0` + String(date.getSeconds())) : String(date.getSeconds())
 
-    out = date.getFullYear() + `-` + date.getMonth() + 1 + `-` + day + 
-            ` ` + date.getHours() + `:` + date.getMinutes() + `:` + date.getSeconds()
+    out = date.getFullYear() + `-` + month + `-` + day + 
+            ` ` + hours + `:` + minutes + `:` + seconds
 
     return out
 }
@@ -64,10 +68,14 @@ function getFormattedDateTimeForUpdate() {
     let out: string = ""
     let date = new Date();
 
-    let day: string = (date.getDate() < 10) ? (`0` + String(date.getDate())) : String(date.getDate())
+    let month: string = (date.getMonth() + 1 < 10) ? (`0` + String(date.getMonth() + 1)) : String(date.getMonth() + 1)
+      let day: string = (date.getDate() < 10) ? (`0` + String(date.getDate())) : String(date.getDate())
+      let hours: string = (date.getHours() < 10) ? (`0` + String(date.getHours())) : String(date.getHours())
+      let minutes: string = date.getMinutes() < 10 ? (`0` + String(date.getMinutes())) : String(date.getMinutes())
+      let seconds: string = date.getSeconds() < 10 ? (`0` + String(date.getSeconds())) : String(date.getSeconds())
 
-    out = date.getFullYear() + `-` + date.getMonth() + 1 + `-` + day + 
-            `T` + date.getHours() + `:` + date.getMinutes() + `:` + date.getSeconds()
+    out = date.getFullYear() + `-` + month + `-` + day + 
+            `T` + hours + `:` + minutes + `:` + seconds
 
     return out
 }
@@ -117,6 +125,7 @@ export const UpdateReimbursement = async (id:Number, amount:string, submitted:st
     try {
         let requestURI = '/reimbursements/' + id + '/update'
         let res = await reimbursomaticBaseClient.post(requestURI, reimbursementData)
+        console.log(res)
         return res.data;
 
     } catch(e) {
