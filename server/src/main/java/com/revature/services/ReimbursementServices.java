@@ -22,13 +22,7 @@ public class ReimbursementServices {
     }
 
     public List<Reimbursement> GetAllReimbursements() {
-        int permissionLevel = 2;
-        if (activeUser.getRoleId() <= permissionLevel && activeUser.getRoleId() > 0) {
-            return rd.GetAllReimbursements();
-        }
-        else {
-            return null;
-        }
+    	return rd.GetAllReimbursements();
     }
 
     public List<Reimbursement> GetReimbursementsByAuthor(int authorId) {
@@ -43,14 +37,7 @@ public class ReimbursementServices {
     }
 
     public Reimbursement GetReimbursementById(int reimbursementId) {
-        int permissionLevel = 2;
-
-        if (activeUser.getRoleId() > 0 && activeUser.getRoleId() <= permissionLevel) {
-           return rd.GetReimbursementById(reimbursementId);
-        }
-        else {
-            return null;
-        }
+        return rd.GetReimbursementById(reimbursementId);
     }
 
     public List<Reimbursement> GetReimbursementsByStatus(int statusId) {

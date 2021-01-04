@@ -3,7 +3,7 @@ import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { Redirect } from 'react-router';
 import User from '../../models/User';
 import Divider from '@material-ui/core/Divider';
-import { getCurrentUsersReimbursements, sendTestURI, TestFormSend, SendReimbursementRequest } from '../remote/reimbursomatic/reimbursomatic-functions';
+import { getCurrentUsersReimbursements, SendReimbursementRequest } from '../remote/reimbursomatic/reimbursomatic-functions';
 import Reimbursement from '../../models/Reimbursement';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
@@ -25,6 +25,18 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+
+
+//This page shows a user's info and their past tickets
+//On a button press, a form will popup to submit a new ticket
+
+//This page should have:
+// ticket creation (see 'Form Dialog' in Material UI)
+
+//If I have time:
+//  - Sorting options
+//  - Change user info option
+
 
 const useRowStyles = makeStyles({
   root: {
@@ -64,6 +76,28 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
 
+  //THIS IS A HACK TO SAVE ME TIME BECAUSE I'M BEHIND ON THIS PROJECT
+  const ReimbursementStatus = ["Denied", "Pending", "Approved" ]
+  const ReimbursementTypes = ["Lodging", "Travel","Food", "Other"]
+
+  function parseDateString(dateString:string) {
+    let out: string = ""
+    if (dateString) {
+      let date = new Date(dateString);
+
+      let month: string = (date.getMonth() + 1 < 10) ? (`0` + String(date.getMonth() + 1)) : String(date.getMonth() + 1)
+      let day: string = (date.getDate() < 10) ? (`0` + String(date.getDate())) : String(date.getDate())
+      let minutes: string = date.getMinutes() < 10 ? (`0` + String(date.getMinutes())) : String(date.getMinutes())
+      let seconds: string = date.getSeconds() < 10 ? (`0` + String(date.getSeconds())) : String(date.getSeconds())
+
+      out = date.getFullYear() + `-` + month + `-` + day + 
+              `T` + (date.getHours()) + `:` + minutes + `:` + seconds
+    }
+    return out
+  }
+  const submittedDate = parseDateString(row.dateSubmitted);
+  const resolvedDate = parseDateString(row.dateResolved);
+
   return (
     <React.Fragment>
       <TableRow className={classes.root}>
@@ -76,12 +110,12 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           {row.id}
         </TableCell>
         <TableCell align="right" className={classes.root}>{row.amount}</TableCell>
-        <TableCell align="right" className={classes.root}>{row.dateSubmitted}</TableCell>
-        <TableCell align="right" className={classes.root}>{row.dateResolved}</TableCell>
+        <TableCell align="right" className={classes.root}>{submittedDate}</TableCell>
+        <TableCell align="right" className={classes.root}>{resolvedDate}</TableCell>
         <TableCell align="right" className={classes.root}>{row.authorId}</TableCell>
         <TableCell align="right" className={classes.root}>{row.resolverId}</TableCell>
-        <TableCell align="right" className={classes.root}>{row.statusId}</TableCell>
-        <TableCell align="right" className={classes.root}>{row.typeId}</TableCell>
+        <TableCell align="right" className={classes.root}>{ReimbursementStatus[row.statusId-1]}</TableCell>
+        <TableCell align="right" className={classes.root}>{ReimbursementTypes[row.typeId-1]}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0, color:'white'}} colSpan={9}>
@@ -102,16 +136,6 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 interface IUser {
     currentUser: User
 }
-
-//This page shows a user's info and their past tickets
-//On a button press, a form will popup to submit a new ticket
-
-//This page should have:
-// ticket creation (see 'Form Dialog' in Material UI)
-
-//If I have time:
-//  - Sorting options
-//  - Change user info option
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -171,6 +195,8 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
     const [formExpenseType, setFormExpenseType] = React.useState('1');
     const [formDescription, setFormDescription] = React.useState('');
 
+    const roles = ["Admin", "Finance Manager", "Employee" ]
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -206,18 +232,6 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
   })
 
 
-  // const testURI = async (e:SyntheticEvent) => {
-  //     e.preventDefault()
-  //     try {
-  //         let res = await sendTestURI(props.currentUser)
-  //         console.log(res)
-  //     }catch(e){
-  //         console.log(e)
-  //         //display the error in some way
-  //     }
-  //   }
-
-
   const getTicketManagementButton = (user:User, classStyle:any) => {
       if (user.roleId > 0 && user.roleId <= 2) {
           return <Link to="/manager"><Button variant="outlined" color="primary">Ticket Management</Button></Link>
@@ -226,11 +240,9 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
 
   const submitReimbursementRequest = async(event:SyntheticEvent) => {
     event.preventDefault()
-
     handleClose()
 
     //TODO: handle input cleaning better
-    
     try {
       await SendReimbursementRequest(formAmount, formExpenseType, formDescription, props.currentUser.id)
 
@@ -299,8 +311,8 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
                   </TableRow>
                   <TableRow>
                       <TableCell />
-                      <TableCell className={classes.tableCell}>Role ID:</TableCell>
-                      <TableCell align="left" className={classes.tableCell}>{props.currentUser.roleId}</TableCell>
+                      <TableCell className={classes.tableCell}>Role:</TableCell>
+                      <TableCell align="left" className={classes.tableCell}>{roles[props.currentUser.roleId - 1]}</TableCell>
                   </TableRow>
                   </TableHead>
               </Table>
@@ -319,8 +331,8 @@ export const Home : React.FunctionComponent<any> = (props:IUser) => {
                       <TableCell align="right" className={classes.tableCell}>Date Resolved</TableCell>
                       <TableCell align="right" className={classes.tableCell}>Author ID</TableCell>
                       <TableCell align="right" className={classes.tableCell}>Resolver ID</TableCell>
-                      <TableCell align="right" className={classes.tableCell}>Status ID</TableCell>
-                      <TableCell align="right" className={classes.tableCell}>Type ID</TableCell>
+                      <TableCell align="right" className={classes.tableCell}>Status</TableCell>
+                      <TableCell align="right" className={classes.tableCell}>Type</TableCell>
                   </TableRow>
                   </TableHead>
                   <TableBody>

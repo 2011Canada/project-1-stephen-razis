@@ -85,6 +85,15 @@ public class FrontController extends HttpServlet {
 	    			if (splitURI.length > 2 && splitURI[2].equals("create")) {
 	    				reimbursementController.CreateNewReimbursement(req, res);
 	    			}
+	    			else if (splitURI.length > 2 && splitURI[2].equals("all")) {
+	    				reimbursementController.GetAllReimbursements(req, res);
+	    			}
+//	    			else if (splitURI.length > 2 && !splitURI[2].equals("all")) {
+//	    				reimbursementController.GetReimbursementById(req, res, splitURI[2]);
+//	    			}
+	    			else if (splitURI.length == 4 && splitURI[3].equals("update")) {
+	    				reimbursementController.UpdateReimbursement(req, res, splitURI[2]);
+	    			}
 	    			else {
 	    				res.setStatus(400);
 		    			writer.write("Method not supported.");

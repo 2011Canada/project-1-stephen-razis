@@ -52,6 +52,24 @@ public class ReimbursementController {
 		}
 	}
 	
+	
+	public void GetAllReimbursements(HttpServletRequest req, HttpServletResponse res) throws JsonParseException, JsonMappingException, IOException {
+		PrintWriter writer = res.getWriter();
+		try {			
+			ReimbursementServices rs = new ReimbursementServices(null);
+			
+			List<Reimbursement> reimbursements = rs.GetAllReimbursements();
+			res.setStatus(200);
+			writer.write(om.writeValueAsString(reimbursements));
+		} 
+		catch(Exception e) {
+			res.setStatus(404);
+			writer.write(e.getMessage());
+		}
+		
+	}
+	
+	
 	public void CreateNewReimbursement (HttpServletRequest req, HttpServletResponse res) throws JsonParseException, JsonMappingException, IOException, NullPointerException, NumberFormatException {
 		PrintWriter writer = res.getWriter();
 		try {
@@ -63,6 +81,41 @@ public class ReimbursementController {
 			 res.setStatus(200);
 			 writer.write("New reimbursement has been created.");
 		
+		} catch(Exception e) {
+			writer.write(e.getMessage());
+		}
+	}
+	
+	public void UpdateReimbursement (HttpServletRequest req, HttpServletResponse res, String reimbursementId) throws JsonParseException, JsonMappingException, IOException, NullPointerException, NumberFormatException {
+		PrintWriter writer = res.getWriter();
+		try {
+			Reimbursement r = om.readValue(req.getInputStream(), Reimbursement.class);
+			
+			ReimbursementServices rs = new ReimbursementServices(null);
+			 rs.UpdateReimbursementRequest(r);
+			 res.setStatus(200);
+			 writer.write(r.toString());
+		
+		} catch(Exception e) {
+			writer.write(e.getMessage());
+		}
+	}
+	
+	public void GetReimbursementById(HttpServletRequest req, HttpServletResponse res, String id) throws JsonParseException, JsonMappingException, IOException, NumberFormatException{
+		PrintWriter writer = res.getWriter();
+		try {
+			ReimbursementServices rs = new ReimbursementServices(null);
+			int idNum = Integer.parseInt(id);
+			
+			Reimbursement r = rs.GetReimbursementById(idNum);
+			if (r != null) {
+				res.setStatus(200);
+				writer.write(om.writeValueAsString(r));
+			}
+			else {
+				res.setStatus(404);
+				writer.write("Reimbursement not found.");
+			}
 		} catch(Exception e) {
 			writer.write(e.getMessage());
 		}

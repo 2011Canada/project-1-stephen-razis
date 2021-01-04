@@ -1,6 +1,4 @@
-import { timeStamp } from 'console';
 import { reimbursomaticBaseClient } from '.';
-import Reimbursement from '../../../models/Reimbursement';
 import User from '../../../models/User';
 
 export const getLogin = async (username:string, password:string) => {
@@ -21,18 +19,6 @@ export const getLogin = async (username:string, password:string) => {
     }
 }
 
-export const sendTestURI = async (user:User) => {
-    try {
-        let res = await reimbursomaticBaseClient.post('/users/fdsa', null)
-        return res.data
-    } catch(e) {
-        if (e.response) {
-            throw new Error(JSON.stringify(e.response))
-        } else {
-            throw new Error("Something went wrong.")
-        }
-    }
-}
 
 export const getCurrentUsersReimbursements = async (user:User) => {
     try {
@@ -48,22 +34,46 @@ export const getCurrentUsersReimbursements = async (user:User) => {
     }
 }
 
-function getFormattedDateTime() {
+export const getAllReimbursements = async (user:User) => { 
+    try {
+        let requestURI = '/reimbursements/all'
+        let res = await reimbursomaticBaseClient.post(requestURI, null)
+        return res.data
+    } catch(e) {
+        if (e.response) {
+            throw new Error(e)
+        } else {
+            throw new Error("Something went wrong.")
+        }
+    }
+}
+
+function getFormattedDateTimeForCreate() {
     let out: string = ""
     let date = new Date();
-    out = date.getFullYear() + `-` + date.getMonth() + 1 + `-` + date.getDate() + ` ` + 
-            date.getHours() + `:` + date.getMinutes() + `:` + date.getSeconds()
+
+    let day: string = (date.getDate() < 10) ? (`0` + String(date.getDate())) : String(date.getDate())
+
+    out = date.getFullYear() + `-` + date.getMonth() + 1 + `-` + day + 
+            ` ` + date.getHours() + `:` + date.getMinutes() + `:` + date.getSeconds()
 
     return out
 }
 
-export const TestFormSend = () => {
-    console.log(getFormattedDateTime());
-    
+function getFormattedDateTimeForUpdate() {
+    let out: string = ""
+    let date = new Date();
+
+    let day: string = (date.getDate() < 10) ? (`0` + String(date.getDate())) : String(date.getDate())
+
+    out = date.getFullYear() + `-` + date.getMonth() + 1 + `-` + day + 
+            `T` + date.getHours() + `:` + date.getMinutes() + `:` + date.getSeconds()
+
+    return out
 }
 
 export const SendReimbursementRequest = async (amount:string, typeId:string, description:string, authorId:string) => {
-    let dateTime:string = getFormattedDateTime();
+    let dateTime:string = getFormattedDateTimeForCreate();
     
     let reimbursementData = {
         id:0,
@@ -77,6 +87,7 @@ export const SendReimbursementRequest = async (amount:string, typeId:string, des
     try {
         let requestURI = '/reimbursements/create'
         let res = await reimbursomaticBaseClient.post(requestURI, reimbursementData)
+        console.log(res)
         return res.data;
 
     } catch(e) {
@@ -87,6 +98,50 @@ export const SendReimbursementRequest = async (amount:string, typeId:string, des
         }
     }
 }
+
+export const UpdateReimbursement = async (id:Number, amount:string, submitted:string, description:string, authorId:Number, resolverId:Number, statusId:Number, typeId:Number) => {
+    let dateTime:string = getFormattedDateTimeForUpdate();
+    
+    let reimbursementData = {
+        id,
+        amount,
+        submitted,
+        resolved:dateTime,
+        description,
+        authorId,
+        resolverId,
+        statusId,
+        typeId
+    }
+
+    try {
+        let requestURI = '/reimbursements/' + id + '/update'
+        let res = await reimbursomaticBaseClient.post(requestURI, reimbursementData)
+        return res.data;
+
+    } catch(e) {
+        if (e.response) {
+            console.log(e)
+        } else {
+            console.log("failed to send request.")
+        }
+    }
+}
+
+// export const RequestReimbursementById = async (id:Number) => { 
+//     try {
+//         let requestURI = '/reimbursements/' + id
+//         let res = await reimbursomaticBaseClient.post(requestURI, null)
+
+//         return res.data
+//     } catch(e) {
+//         if (e.response) {
+//             throw new Error(e)
+//         } else {
+//             throw new Error("Something went wrong.")
+//         }
+//     }
+// }
 
 
 // format like this

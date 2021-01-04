@@ -49,6 +49,18 @@ public class Reimbursement {
     }
 
     //description   
+    public Reimbursement(int id, String amount, String submitted, String resolved, String description, int authorId, int typeId, int resolverId, int statusId) {
+        this.id = id;
+        this.amount = Double.parseDouble(amount);
+        this.submitted = Timestamp.valueOf(submitted);
+        this.resolved = Timestamp.valueOf(resolved);
+        this.description = description;
+        this.authorId = authorId;
+        this.resolverId = resolverId;
+        this.statusId = statusId;
+        this.typeId = typeId;
+    }
+    
     public Reimbursement(int id, double amount, Timestamp submitted, Timestamp resolved, String description, int authorId, int typeId, int resolverId, int statusId) {
         this.id = id;
         this.amount = amount;
